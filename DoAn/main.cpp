@@ -127,39 +127,51 @@ int main() {
                 // Tạo hóa đơn
                 HoaDon hd(maHD, *nv, *kh);
                 string tenSanPham;
+                int giaSanPham = kho.layGiaSanPham(tenSanPham);
+                
                 int soLuong;
                 char tiepTuc;
 
                 do {
-            cout << "Nhập tên sản phẩm (Kinh Can, Kinh Vien, Kinh Loan): ";
-            getline(cin, tenSanPham);
-
-            // Kiểm tra tên sản phẩm có tồn tại không
-            while (!kho.kiemTraSanPham(tenSanPham, 1)) {  // Chỉ kiểm tra xem sản phẩm có tồn tại không
-                cout << "Sản phẩm không hợp lệ! Vui lòng nhập lại: ";
+                cout << "Nhập tên sản phẩm (Kinh Can, Kinh Vien, Kinh Loan): ";
                 getline(cin, tenSanPham);
-            }
 
-            cout << "Nhập số lượng: ";
-            cin >> soLuong;
-            cin.ignore();
+                // Tìm sản phẩm trong kho để lấy giá chính xác
+                SanPham* sanPhamTrongKho = nullptr;
+                for (auto& sp : kho.getDanhSachSanPham()) {  // Bạn cần thêm phương thức này vào lớp Kho
+                    if (sp.getTenSanPham() == tenSanPham) {
+                        sanPhamTrongKho = &sp;
+                        break;
+                    }
+                }
 
-            // Kiểm tra số lượng hợp lệ
-            while (!kho.kiemTraSanPham(tenSanPham, soLuong)) {
-                cout << "⚠ Số lượng không đủ trong kho! Hãy nhập số lượng hợp lệ: ";
+                // Kiểm tra tên sản phẩm có tồn tại không
+                while (!kho.kiemTraSanPham(tenSanPham, 1)) {
+                    cout << "Sản phẩm không hợp lệ! Vui lòng nhập lại: ";
+                    getline(cin, tenSanPham);
+                }
+
+                cout << "Nhập số lượng: ";
                 cin >> soLuong;
                 cin.ignore();
-            }
 
-            // Thêm sản phẩm vào hóa đơn
-            hd.themSanPham(SanPham("", tenSanPham, 0, 0), soLuong);
-            kho.capNhatKho(tenSanPham, soLuong);
+                // Kiểm tra số lượng hợp lệ
+                while (!kho.kiemTraSanPham(tenSanPham, soLuong)) {
+                    cout << "⚠ Số lượng không đủ trong kho! Hãy nhập số lượng hợp lệ: ";
+                    cin >> soLuong;
+                    cin.ignore();
+                }
 
-            cout << "Thêm sản phẩm khác? (y/n): ";
-            cin >> tiepTuc;
-            cin.ignore();
+                // Thêm sản phẩm vào hóa đơn với giá từ kho
+                if (sanPhamTrongKho) {
+                    hd.themSanPham(*sanPhamTrongKho, soLuong);
+                    kho.capNhatKho(tenSanPham, soLuong);
+                }
+
+                cout << "Thêm sản phẩm khác? (y/n): ";
+                cin >> tiepTuc;
+                cin.ignore();
             } while (tiepTuc == 'y' || tiepTuc == 'Y');
-
                 danhSachHoaDon.push_back(hd);
                 cout << "Hóa đơn đã được tạo!\n";
                 hd.hienThiHoaDon();

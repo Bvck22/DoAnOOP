@@ -9,8 +9,10 @@ HoaDon::HoaDon(std::string maHD, NhanVien nv, KhachHang kh)
 
 void HoaDon::themSanPham(SanPham sp, int soLuong) {
     danhSachSanPham.push_back(std::make_pair(sp, soLuong));
-    tongTien += sp.getSoLuongTonKho() * soLuong;
+    tongTien += sp.getGia() * soLuong;
+    cout << "Đã thêm sản phẩm: " << sp.getTenSanPham() << " - Số lượng: " << soLuong << " - Giá: " << sp.getGia() << " VND" << endl;
 }
+
 
 void HoaDon::hienThiHoaDon() const {
     cout << "\n===== HÓA ĐƠN =====\n";
@@ -22,10 +24,11 @@ void HoaDon::hienThiHoaDon() const {
          << setw(20) << khachHang.getHoTen() << endl;
 
     cout << "\n=== Danh sách sản phẩm ===\n";
-    cout << setw(20) << "Tên sản phẩm"
-         << setw(10) << "Số lượng" << endl;
+    cout << setw(32) << "Tên sản phẩm"<< setw(30) << "Số lượng" << setw(30) << "Giá" << endl;
     for (const auto& sp : danhSachSanPham) {
-        cout << setw(20) << sp.first.getTenSanPham() 
-             << setw(10) << sp.second << endl;
+        cout << setw(32) << sp.first.getTenSanPham() 
+             << setw(30) << sp.second 
+            << setw(30) << sp.first.getGia() << endl;
     }
+    cout << "\nTổng tiền: " << tongTien << " VND\n";
 }
